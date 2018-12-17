@@ -1,0 +1,6 @@
+reports/
+target/
+.settings/
+.classpath
+.project
+.vscode/
