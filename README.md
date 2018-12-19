@@ -17,7 +17,7 @@ Ranorex Webtestit is a lightweight IDE optimized for building UI web tests with 
 * Make sure JDK is installed
 * Open Ranorex Webtestit
 * Click "Open sample project"
-* Choose "Java - Demoshop"
+* Choose "Java - Data-driven sample"
 * Choose a folder to clone into and confirm
 * The newest version will be cloned and opened
 
