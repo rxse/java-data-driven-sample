@@ -22,7 +22,5 @@
     "password": "",
     "user": ""
   },
-  "templateFolder": "templates",
-  "version": "0.22.0",
-  "wordWrap": "off"
+  "version": "0.22.0"
 }
