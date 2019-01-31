@@ -5,6 +5,8 @@ package uitest.tests;
 import uitest.data.CredentialsDataProvider;
 import uitest.TestNgTestBase;
 import uitest.pageobjects.*;
+
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -13,6 +15,7 @@ class LoginPage extends TestNgTestBase {
     // Providing the previously created Data Provider that will be used in the test
     @Test(dataProvider = "Credentials", dataProviderClass = CredentialsDataProvider.class)
     public void checkCredentials(String sUsername, String sPassword, Boolean shouldPass) throws InterruptedException {
+        WebDriver driver = getDriver();
 
         // Initiating the Page Object
         LoginPageObject loginPO = new LoginPageObject(driver);

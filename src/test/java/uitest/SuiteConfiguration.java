@@ -53,7 +53,8 @@ public class SuiteConfiguration {
             if (value.toLowerCase().equals("true") || value.toLowerCase().equals("false")) {
                 capabilities.setCapability(name, Boolean.valueOf(value));
             } else if (value.startsWith("file:")) {
-                capabilities.setCapability(name, new File(".", value.substring(5)).getCanonicalFile().getAbsolutePath());
+                capabilities.setCapability(name,
+                        new File(".", value.substring(5)).getCanonicalFile().getAbsolutePath());
             } else {
                 if (name.equals("androidPackage")) {
                     Map<String, Object> chromeOptions = new HashMap<String, Object>();
@@ -87,6 +88,9 @@ public class SuiteConfiguration {
                 final ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--load-extension=" + selocityPath);
                 chromeOptions.addArguments("--auto-open-devtools-for-tabs");
+                Map<String, Object> prefs = new HashMap<String, Object>();
+                prefs.put("devtools.preferences.currentDockState", "\"undocked\"");
+                chromeOptions.setExperimentalOption("prefs", prefs);
                 capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             }
         }

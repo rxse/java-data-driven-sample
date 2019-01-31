@@ -1,8 +1,11 @@
 package uitest;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -24,7 +27,20 @@ public class TestNgTestBase {
     protected static DesiredCapabilities capabilities;
     protected static boolean debugMode;
 
+    /**
+     * @deprecated
+     *             <p>
+     *             As of release 0.25.0, replaced by {@link #getDriver()}.Fix by
+     *             adding the following line to the beginning of your test method:
+     *             </p>
+     *             <p>
+     *             WebDriver driver = getDriver();
+     *             </p>
+     */
+    @Deprecated
     protected WebDriver driver;
+
+    private Map<String, WebDriver> drivers = new HashMap<String, WebDriver>();
 
     @BeforeSuite
     public void initTestSuite() throws IOException {
@@ -56,19 +72,44 @@ public class TestNgTestBase {
         }
     }
 
+    /**
+     * <p>
+     * Returns an instance of WebDriver for the calling test method. This method can
+     * only be called from within test methods.
+     * </p>
+     * <p>
+     * Note: this instance is disposed automatically after test run
+     * </p>
+     */
+    protected WebDriver getDriver() {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        for (int i = 2; i < stackTraceElements.length; i++) {
+            WebDriver driver = drivers.get(stackTraceElements[i].getMethodName());
+            if (driver != null) {
+                return driver;
+            }
+        }
+        throw new Error("No WebDriver instance was created for this test method.");
+    }
+
     @BeforeMethod
-    public void initWebDriver() {
+    public void initWebDriver(Method method) {
         if (debugMode) {
             driver = DebugWebDriverPool.DEFAULT.getDriver(gridHubUrl, capabilities);
         } else {
             driver = WebDriverPool.DEFAULT.getDriver(gridHubUrl, capabilities);
         }
+        drivers.put(method.getName(), driver);
     }
 
     @AfterMethod
-    public void tearDownWebDriver() {
-        if (!debugMode) {
-            driver.quit();
+    public void tearDownWebDriver(Method method) {
+        WebDriver driver = drivers.get(method.getName());
+        if (driver != null) {
+            if (!debugMode) {
+                driver.quit();
+            }
+            drivers.remove(method.getName());
         }
     }
 
