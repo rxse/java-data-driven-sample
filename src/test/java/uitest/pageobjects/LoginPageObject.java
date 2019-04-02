@@ -5,6 +5,7 @@ package uitest.pageobjects;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 
+// Additional data: {"img":"screenshots/9b0a8b43-047d-9fc2-64d1-f3ba0dab2db6.png"}
 public class LoginPageObject {
 
     // Additional data:
