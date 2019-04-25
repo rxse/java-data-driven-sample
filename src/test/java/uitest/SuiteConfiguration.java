@@ -83,8 +83,8 @@ public class SuiteConfiguration {
             }
         } else {
             if (hasProperty("debug") && Boolean.valueOf(getProperty("debug")) && browserName.equals("chrome")
-                    && hasProperty("selocitypath") && getProperty("selocitypath").length() > 0) {
-                String selocityPath = getProperty("selocitypath");
+                    && hasProperty("selocityPath") && getProperty("selocityPath").length() > 0) {
+                String selocityPath = getProperty("selocityPath");
                 final ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--load-extension=" + selocityPath);
                 chromeOptions.addArguments("--auto-open-devtools-for-tabs");
@@ -104,5 +104,13 @@ public class SuiteConfiguration {
 
     public String getProperty(String name) {
         return properties.getProperty(name);
+    }
+
+    public String getTimestampStarted() {
+        return hasProperty("timestampStarted") ? getProperty("timestampStarted") : "";
+    }
+
+    public String getEndpointBrowserName() {
+        return hasProperty("endpointBrowserName") ? getProperty("endpointBrowserName") : "";
     }
 }

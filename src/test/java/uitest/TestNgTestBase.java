@@ -1,20 +1,29 @@
 package uitest;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeSuite;
+
 import ru.stqa.selenium.factory.WebDriverPool;
 
 /**
@@ -26,6 +35,9 @@ public class TestNgTestBase {
     protected static String baseUrl;
     protected static DesiredCapabilities capabilities;
     protected static boolean debugMode;
+    protected static boolean screenshotOnFailure;
+    protected static String timestampStarted;
+    protected static String endpointBrowserName;
 
     /**
      * @deprecated
@@ -47,6 +59,8 @@ public class TestNgTestBase {
         SuiteConfiguration config = new SuiteConfiguration();
         baseUrl = config.getProperty("site.url");
         capabilities = (DesiredCapabilities) config.getCapabilities();
+        timestampStarted = config.getTimestampStarted();
+        endpointBrowserName = config.getEndpointBrowserName();
         if (config.hasProperty("grid.url") && !"".equals(config.getProperty("grid.url"))) {
             gridHubUrl = new URL(config.getProperty("grid.url"));
         }
@@ -69,6 +83,9 @@ public class TestNgTestBase {
         }
         if (config.hasProperty("debug")) {
             debugMode = Boolean.valueOf(config.getProperty("debug"));
+        }
+        if (config.hasProperty("screenshotOnFailure")) {
+            screenshotOnFailure = Boolean.valueOf(config.getProperty("screenshotOnFailure"));
         }
     }
 
@@ -120,4 +137,28 @@ public class TestNgTestBase {
         }
     }
 
+    @AfterMethod
+    public void takeScreenshotOnFailure(ITestResult result) {
+        if (screenshotOnFailure) {
+            try {
+                if (result.getStatus() == ITestResult.FAILURE) {
+                    String uniqueName = result.getInstanceName() + result.getName();
+                    String hash = Hex.encodeHexString(MessageDigest.getInstance("MD5").digest(uniqueName.getBytes()));
+                    takeScreenshot(String.format("%s-%s-%s", timestampStarted, endpointBrowserName, hash));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void takeScreenshot(String fileName) {
+        try {
+            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            String path = String.format("reports%1$sscreenshots%1$s%2$s.jpg", File.separator, fileName);
+            FileUtils.copyFile(scrFile, new File(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
