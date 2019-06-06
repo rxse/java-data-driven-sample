@@ -6,11 +6,26 @@ import uitest.data.CredentialsDataProvider;
 import uitest.TestNgTestBase;
 import uitest.pageobjects.*;
 
+import java.lang.reflect.Method;
+
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
+import org.testng.ITest;
 import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 
-class LoginPage extends TestNgTestBase {
+class LoginPage<TestParameters> extends TestNgTestBase implements ITest {
+    private ThreadLocal<String> testName = new ThreadLocal<>();
+
+    @BeforeMethod
+    public void BeforeMethod(Method method, Object[] testData) {
+        testName.set(String.format("%s [Username: '%s'; Pass: '%s']", method.getName(), testData[0], testData[1]));
+    }
+
+    @Override
+    public String getTestName() {
+        return testName.get();
+    }
 
     // Providing the previously created Data Provider that will be used in the test
     @Test(dataProvider = "Credentials", dataProviderClass = CredentialsDataProvider.class)
