@@ -1,26 +1,10 @@
 {
   "defaultTestName": "NewTest",
-  "jiraCredentials": {
-    "host": "",
-    "issueType": "Task",
-    "password": "",
-    "projectKey": "TEST",
-    "protocol": "http",
-    "statusCompletedName": "Done",
-    "statusToDoName": "To Do",
-    "strictSSL": false,
-    "username": ""
-  },
   "pageObjectFolder": "src/test/java/uitest/pageobjects",
   "projectName": "java-data-driven-sample",
   "rootPackage": "uitest",
   "targetFramework": "Selenium",
   "targetLanguage": "java",
   "testFolder": "src/test/java/uitest/tests",
-  "testrailCredentials": {
-    "host": "",
-    "password": "",
-    "user": ""
-  },
-  "version": "1.3.0"
+  "version": "1.4.0"
 }
