@@ -1,6 +1,7 @@
-reports/
-target/
 .settings/
 .classpath
 .project
-.vscode/
+.webtestit/
+reports/
+target/
+temp-reports/
